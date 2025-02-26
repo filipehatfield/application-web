@@ -1,0 +1,102 @@
+name: CI/CD Pipeline
+on:
+  push:
+    branches:
+      - main
+jobs:
+  ci:
+    name: Continuous Integration
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v3
+
+      - name: Instalar dependências
+        run: |
+          cd app
+          npm install
+
+      - name: Executar testes
+        run: |
+          cd app
+          npm test
+
+      - name: Construir aplicação
+        run: |
+          cd app
+          npm run build
+
+      - name: Armazenar artefato
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-build
+          path: app/
+
+  linter:
+    name: Linter Check
+    runs-on: ubuntu-latest
+    needs: ci
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v3
+
+      - name: Rodar Linter
+        uses: ./.github/actions/linter-check
+        with:
+          # Parâmetros ou entradas podem ser passados aqui, se necessário
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  dependency-check-and-sast:
+    name: Análise de Segurança (SAST e Dependency-Check)
+    runs-on: ubuntu-latest
+    needs: ci
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v3
+
+      - name: Instalar Dependency-Check
+        run: |
+          # Baixar e instalar o Dependency-Check
+          wget https://github.com/jeremylong/DependencyCheck/releases/download/v12.1.0/dependency-check-12.1.0-release.zip
+          unzip dependency-check-12.1.0-release.zip
+          cd dependency-check
+
+      - name: Analisar dependências do projeto
+        run: |
+          # Rodar o Dependency-Check para analisar dependências do Node.js
+          ./bin/dependency-check.sh \
+          --project "application-web" \
+          --scan ./app \
+          -f ALL \
+          --out ./dependency-check-report
+
+      - name: Salvar relatório de dependências como artefato
+        uses: actions/upload-artifact@v3
+        with:
+          name: dependency-check-report
+          path: ./dependency-check-report
+
+  sonar:
+    name: SonarQube Analysis
+    runs-on: ubuntu-latest
+    needs: [linter, dependency-check-and-sast]
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v3
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}        
+      - name: Instalar SonarQube Scanner
+        run: |
+          curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-7.0.2.4839.zip
+          unzip sonar-scanner-cli-7.0.2.4839.zip
+          mv sonar-scanner-7.0.2.4839 /opt/sonar-scanner
+          export PATH=$PATH:/opt/sonar-scanner/bin
+
+      - name: Rodar análise do SonarQube
+        run: |
+          sonar-scanner \
+            -Dsonar.projectKey=filipehatfield_application-web \
+            -Dsonar.organization=filipehatfield \
+            -Dsonar.dependencyCheck.reportPath=./dependency-check-report/dependency-check-report.json            
+            -Dsonar.host.url=https://sonarcloud.io

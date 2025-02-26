@@ -1,0 +1,6 @@
+name: 'Linter Check'
+description: 'Verifica se um arquivo essencial está presente'
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
+    

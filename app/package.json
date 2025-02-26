@@ -1,0 +1,14 @@
+{
+  "name": "web-app",
+  "version": "1.0.0",
+  "description": "Aplicação web simples com Express.js",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Executando testes...\" && exit 0",
+    "build": "echo \"Construção finalizada.\""
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
