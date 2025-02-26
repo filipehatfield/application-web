@@ -5,10 +5,17 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "echo \"Executando testes...\" && exit 0",
-    "build": "echo \"Construção finalizada.\""
+    "test": "jest --coverage",
+    "build": "echo \"Compilação e verificação concluída.\""
   },
   "dependencies": {
     "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0",
+    "supertest": "^6.3.0"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
