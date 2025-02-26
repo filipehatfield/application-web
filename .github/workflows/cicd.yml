@@ -45,7 +45,7 @@ jobs:
         with:
           # Parâmetros ou entradas podem ser passados aqui, se necessário
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
 
   dependency-check-and-sast:
     name: Análise de Segurança (SAST e Dependency-Check)
