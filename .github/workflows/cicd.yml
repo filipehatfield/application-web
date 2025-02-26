@@ -54,23 +54,30 @@ jobs:
     steps:
       - name: Checkout código
         uses: actions/checkout@v4
-  
-      - name: Analisar dependências do projeto com Docker
+
+      - name: Instalar Dependency-Check
         run: |
-          # Rodar o Dependency-Check usando Docker
-          docker run --rm \
-            -v $(pwd)/app:/src \
-            -v $(pwd)/dependency-check-report:/report \
-            --entrypoint /bin/bash \
-            owasp/dependency-check:latest \
-            -c "/dependency-check/bin/dependency-check.sh --project 'application-web' --scan /src --out /report --format ALL"
-  
+          # Baixar e instalar o Dependency-Check
+          wget https://github.com/jeremylong/DependencyCheck/releases/download/v12.1.0/dependency-check-12.1.0-release.zip
+          unzip dependency-check-12.1.0-release.zip
+          cd dependency-check
+          cp dependency-check /opt/       
+          
+
+      - name: Analisar dependências do projeto
+        run: |
+          # Rodar o Dependency-Check para analisar dependências do Node.js
+          /bin/sh /opt/dependency-check/bin/dependency-check.sh \
+          --project "application-web" \
+          --scan ./app \
+          -f ALL \
+          --out ./dependency-check-report
+
       - name: Salvar relatório de dependências como artefato
         uses: actions/upload-artifact@v4
         with:
           name: dependency-check-report
           path: ./dependency-check-report
-  
 
   sonar:
     name: SonarQube Analysis
