@@ -98,5 +98,5 @@ jobs:
           sonar-scanner \
             -Dsonar.projectKey=filipehatfield_application-web \
             -Dsonar.organization=filipehatfield \
-            -Dsonar.dependencyCheck.reportPath=./dependency-check-report/dependency-check-report.json            
+            -Dsonar.dependencyCheck.reportPath=./dependency-check-report/dependency-check-report.json \
             -Dsonar.host.url=https://sonarcloud.io
