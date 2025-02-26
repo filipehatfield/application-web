@@ -43,7 +43,7 @@ jobs:
       - name: Rodar Linter
         uses: ./.github/actions/linter-check
         with:
-          # Parâmetros ou entradas podem ser passados aqui, se necessário
+          enable-extra-checks: 'true'                  
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
 
