@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout código
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Instalar dependências
         run: |
@@ -27,7 +27,7 @@ jobs:
           npm run build
 
       - name: Armazenar artefato
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: app-build
           path: app/
@@ -38,7 +38,7 @@ jobs:
     needs: ci
     steps:
       - name: Checkout código
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Rodar Linter
         uses: ./.github/actions/linter-check
@@ -53,7 +53,7 @@ jobs:
     needs: ci
     steps:
       - name: Checkout código
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Instalar Dependency-Check
         run: |
@@ -72,7 +72,7 @@ jobs:
           --out ./dependency-check-report
 
       - name: Salvar relatório de dependências como artefato
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: dependency-check-report
           path: ./dependency-check-report
@@ -83,7 +83,7 @@ jobs:
     needs: [linter, dependency-check-and-sast]
     steps:
       - name: Checkout código
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}        
       - name: Instalar SonarQube Scanner
