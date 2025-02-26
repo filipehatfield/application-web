@@ -2,5 +2,5 @@ name: 'Linter Check'
 description: 'Verifica se um arquivo essencial está presente'
 runs:
   using: 'node16'
-  main: 'src/index.ts'
+  main: 'src/index.js'
     
