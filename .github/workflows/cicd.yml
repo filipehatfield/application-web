@@ -130,6 +130,7 @@ jobs:
           -Dsonar.sources=application-web/app \
           -Dsonar.sourceEncoding=UTF-8 \
           -Dsonar.branch.name=${{ github.ref_name }} \
+          -Dsonar.token=${{ secrets.SONAR_TOKEN }} \
           -Dsonar.dependencyCheck.reportPath=application-web/dependency-check-report/dependency-check-report.json \
           -Dsonar.host.url=https://sonarcloud.io
       - name: Notificação de Falha
@@ -143,4 +144,41 @@ jobs:
           subject: "🚨 SonarQube Analysis Falhou"
           to: fiaraujo@hotmail.com
           from: filipe.araujolima@gmail.com
-          body: "Falha na análise do SonarQube. Verifique o relatório no SonarCloud."          
+          body: "Falha na análise do SonarQube. Verifique o relatório no SonarCloud."
+
+  release:
+    name: Publicar Release
+    runs-on: ubuntu-latest
+    needs: [ci, dependency-check-and-sast, sonar] 
+    if: success() 
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Download do Artefato
+        uses: actions/download-artifact@v4
+        with:
+          name: app-build
+          path: app-build
+
+      - name: Criar Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v1.0.${{ github.run_number }} 
+          release_name: Release v1.0.${{ github.run_number }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Artefato para Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: app-build/app.zip # Caminho do artefato
+          asset_name: application-web-v1.0.${{ github.run_number }}.zip
+          asset_content_type: application/zip
+          
