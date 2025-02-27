@@ -21,10 +21,10 @@ jobs:
 
       - name: Instalar dependências
         run: |
+          cd application-web
           rm -rf node_modules package-lock.json
           npm cache clean --force
           npm install
-          cd application-web
           npm install --save-dev @babel/preset-env @babel/core babel-jest
           npm install process
           npm install path-browserify url --save-dev
