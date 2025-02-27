@@ -11,6 +11,14 @@ jobs:
       - name: Checkout código
         uses: actions/checkout@v4
 
+      - name: Cache Node.js dependencies
+        uses: actions/cache@v4
+        with:
+          path: application-web/node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('application-web/package-lock.json') }}
+          restore-keys: |
+            node-modules-${{ runner.os }}-
+
       - name: Instalar dependências
         run: |
           cd application-web
@@ -24,14 +32,16 @@ jobs:
       - name: Construir aplicação
         run: |
           cd application-web
+          npm install --save-dev webpack webpack-cli
           npm run build
 
       - name: Armazenar artefato
         uses: actions/upload-artifact@v4
         with:
           name: app-build
-          path: app/
-          
+          path: application-web/build/*
+          retention-days: 7
+
   dependency-check-and-sast:
     name: Análise de Segurança (SAST e Dependency-Check)
     runs-on: ubuntu-latest
@@ -40,27 +50,34 @@ jobs:
       - name: Checkout código
         uses: actions/checkout@v4
 
+      - name: Cache Dependency-Check
+        uses: actions/cache@v4
+        with:
+          path: dependency-check
+          key: dependency-check-v12.1.0-${{ runner.os }}
+          restore-keys: |
+            dependency-check-v12.1.0-
+
       - name: Instalar Dependency-Check
+        if: steps.cache-dependency.outputs.cache-hit != 'true'
         run: |
-          # Baixar e instalar o Dependency-Check
           wget https://github.com/jeremylong/DependencyCheck/releases/download/v12.1.0/dependency-check-12.1.0-release.zip
           unzip dependency-check-12.1.0-release.zip
-          cp -R ./dependency-check /opt/          
+          mv dependency-check /opt/
 
       - name: Analisar dependências do projeto
         run: |
-          # Rodar o Dependency-Check para analisar dependências do Node.js
           /bin/sh /opt/dependency-check/bin/dependency-check.sh \
           --project "application-web" \
           --scan ./application-web/app \
           -f ALL \
-          --out ./dependency-check-report
+          --out ./application-web/dependency-check-report
 
       - name: Salvar relatório de dependências como artefato
         uses: actions/upload-artifact@v4
         with:
           name: dependency-check-report
-          path: ./dependency-check-report
+          path: application-web/dependency-check-report
 
   sonar:
     name: SonarQube Analysis
@@ -71,10 +88,11 @@ jobs:
         uses: actions/checkout@v4
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}        
+      
       - name: Instalar SonarQube Scanner
         run: |
           curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-7.0.2.4839.zip
-          unzip sonar-scanner-cli-7.0.2.4839.zip
+          unzip sonar-scanner.zip
           mv sonar-scanner-7.0.2.4839 /opt/sonar-scanner
           export PATH=$PATH:/opt/sonar-scanner/bin
 
@@ -85,5 +103,6 @@ jobs:
           -Dsonar.organization=filipehatfield \
           -Dsonar.sources=application-web/app \
           -Dsonar.sourceEncoding=UTF-8 \
-          -Dsonar.dependencyCheck.reportPath=./dependency-check-report/dependency-check-report.json \
+          -Dsonar.branch.name=${{ github.ref_name }} \
+          -Dsonar.dependencyCheck.reportPath=application-web/dependency-check-report/dependency-check-report.json \
           -Dsonar.host.url=https://sonarcloud.io
