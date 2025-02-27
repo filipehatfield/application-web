@@ -14,6 +14,7 @@ jobs:
   ci:
     name: Continuous Integration
     runs-on: ubuntu-latest
+    environment: Auth
     steps:
       - name: Checkout código
         uses: actions/checkout@v4
@@ -66,6 +67,7 @@ jobs:
   dependency-check-and-sast:
     name: Análise de Segurança (SAST e Dependency-Check)
     runs-on: ubuntu-latest
+    environment: Auth
     needs: ci
     steps:
       - name: Checkout código
@@ -115,6 +117,7 @@ jobs:
   sonar:
     name: SonarQube Analysis
     runs-on: ubuntu-latest
+    environment: Auth
     needs: dependency-check-and-sast
     steps:
       - name: Checkout código
@@ -156,6 +159,7 @@ jobs:
   release:
     name: Publicar Release
     runs-on: ubuntu-latest
+    environment: Auth
     needs: [ci, dependency-check-and-sast, sonar] 
     if: success() 
     steps:
