@@ -5,4 +5,4 @@ const server = app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
 });
 
-module.exports = server; // Exporta o servidor para o Jest
+module.exports = { app, server }; // Exporta ambos para facilitar o teste
