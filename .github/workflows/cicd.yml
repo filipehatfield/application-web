@@ -41,8 +41,20 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: app-build
-          path: application-web/build/*
+          path: application-web/*
           retention-days: 7
+      - name: Notificação de Falha
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com 
+          server_port: 587
+          username: ${{ secrets.SMTP_USER }} 
+          password: ${{ secrets.SMTP_PASSWORD }} 
+          subject: "⚠️ CI/CD Pipeline Falhou"
+          to: fiaraujo@hotmail.com
+          from: filipe.araujolima@gmail.com
+          body: "O pipeline falhou na etapa CI. Verifique o relatório no GitHub."          
 
   dependency-check-and-sast:
     name: Análise de Segurança (SAST e Dependency-Check)
@@ -79,7 +91,19 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dependency-check-report
-          path: application-web/dependency-check-report
+          path: application-web/dependency-check-report/*
+      - name: Notificação de Falha
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.SMTP_USER }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: "⚠️ Dependency Check Falhou"
+          to: fiaraujo@hotmail.com
+          from: filipe.araujolima@gmail.com
+          body: "Falha na análise de dependências."          
 
   sonar:
     name: SonarQube Analysis
@@ -100,7 +124,7 @@ jobs:
 
       - name: Rodar análise do SonarQube
         run: |
-          sonar-scanner \
+          /opt/sonar-scanner/bin/sonar-scanner \
           -Dsonar.projectKey=filipehatfield_application-web \
           -Dsonar.organization=filipehatfield \
           -Dsonar.sources=application-web/app \
@@ -108,3 +132,15 @@ jobs:
           -Dsonar.branch.name=${{ github.ref_name }} \
           -Dsonar.dependencyCheck.reportPath=application-web/dependency-check-report/dependency-check-report.json \
           -Dsonar.host.url=https://sonarcloud.io
+      - name: Notificação de Falha
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.SMTP_USER }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: "🚨 SonarQube Analysis Falhou"
+          to: fiaraujo@hotmail.com
+          from: filipe.araujolima@gmail.com
+          body: "Falha na análise do SonarQube. Verifique o relatório no SonarCloud."          
