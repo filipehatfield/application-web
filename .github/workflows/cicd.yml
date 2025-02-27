@@ -32,7 +32,9 @@ jobs:
       - name: Construir aplicação
         run: |
           cd application-web
+          npm install path-browserify url --save-dev
           npm install --save-dev webpack webpack-cli
+          npm install buffer stream-browserify --save-dev
           npm run build
 
       - name: Armazenar artefato
