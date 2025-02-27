@@ -35,6 +35,7 @@ jobs:
           npm install path-browserify url --save-dev
           npm install --save-dev webpack webpack-cli
           npm install buffer stream-browserify --save-dev
+          npm install --save-dev babel-loader @babel/core @babel/preset-env webpack webpack-cli
           npm run build
 
       - name: Armazenar artefato
