@@ -19,7 +19,6 @@ jobs:
       - name: Executar testes
         run: |
           cd application-web/test
-          npm start
           npm test
 
       - name: Construir aplicação
