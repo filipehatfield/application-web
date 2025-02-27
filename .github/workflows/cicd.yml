@@ -23,10 +23,12 @@ jobs:
         run: |
           cd application-web
           npm install --save-dev @babel/preset-env @babel/core babel-jest
+          npm install process
           npm install path-browserify url --save-dev
           npm install --save-dev webpack webpack-cli
           npm install buffer stream-browserify --save-dev
           npm install --save-dev babel-loader @babel/core @babel/preset-env webpack webpack-cli
+          npm install util path-browserify url stream-browserify assert buffer crypto-browserify
           npm install
 
       - name: Executar testes

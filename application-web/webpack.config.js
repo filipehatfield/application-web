@@ -16,14 +16,14 @@ module.exports = {
       "stream": require.resolve("stream-browserify"),
       "assert": require.resolve("assert/"),
       "buffer": require.resolve("buffer/"),
-      "crypto": require.resolve("crypto-browserify")
+      "crypto": require.resolve("crypto-browserify"),
     }
   },
   plugins: [
     new webpack.ProvidePlugin({
       Buffer: ['buffer', 'Buffer'],
       process: 'process/browser'
-    })
+    }),
   ],
   module: {
     rules: [
