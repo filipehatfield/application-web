@@ -1,9 +1,8 @@
 const request = require('supertest');
-const app = require('../app/server'); // Certifique-se que o caminho está correto
+const app = require('../app');
+let server;
 
 describe('Testes da aplicação', () => {
-    let server;
-
     beforeAll(() => {
         server = app.listen(4000); // Inicia o servidor na porta 4000 para testes
     });
@@ -13,7 +12,8 @@ describe('Testes da aplicação', () => {
     });
 
     test('Deve responder com uma mensagem', async () => {
-        const response = await request(server).get('/');
-        expect(response.text).toBe('Aplicação web rodando!');
+        const res = await request(app).get('/');
+        expect(res.statusCode).toEqual(200);
+        expect(res.body).toHaveProperty('message', 'Hello, world!');
     });
 });

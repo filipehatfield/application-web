@@ -1,11 +1,10 @@
 const express = require('express');
-
 const app = express();
-const port = process.env.PORT || 3000;
 
-// Rota principal
+app.use(express.json());
+
 app.get('/', (req, res) => {
-    res.send('Aplicação web rodando!');
+    res.status(200).json({ message: 'Hello, world!' });
 });
 
-module.exports = { app, port };
+module.exports = app; // Exporta apenas a instância do express
