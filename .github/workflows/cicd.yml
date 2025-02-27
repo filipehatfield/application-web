@@ -3,6 +3,13 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
+concurrency:
+  group: ${{ github.ref }}  # Usa a referência da branch como grupo de concorrência
+  cancel-in-progress: true 
+      
 jobs:
   ci:
     name: Continuous Integration
