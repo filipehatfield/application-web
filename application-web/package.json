@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "jest --coverage",
+    "test": "jest --config=jest.config.js --coverage",
     "build": "echo \"Compilação e verificação concluída.\""
   },
   "dependencies": {
