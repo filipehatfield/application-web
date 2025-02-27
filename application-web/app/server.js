@@ -1,17 +1,12 @@
 const express = require('express');
+const path = require('path');
 const app = express();
 
-const port = process.env.PORT || 3000;
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
-    res.send('Aplicação web rodando!');
+  res.sendFile(path.join(__dirname, 'public/index.html'));
 });
 
-// Exporta o app para testes
-if (require.main === module) {
-    app.listen(port, () => {
-        console.log(`Servidor rodando na porta ${port}`);
-    });
-}
-
-module.exports = app;
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));

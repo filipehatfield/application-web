@@ -1,42 +1,43 @@
 const path = require('path');
-const webpack = require('webpack');
 
 module.exports = {
   mode: 'production', // ou 'development'
-  entry: './app/server.js', // Ajuste conforme sua entrada
+  entry: './app/public/index.js', // Apenas código front-end
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'app/public'),
   },
   resolve: {
     fallback: {
       "path": require.resolve("path-browserify"),
       "url": require.resolve("url/"),
-      "util": require.resolve("util/"),
+      "crypto": require.resolve("crypto-browserify"),
       "stream": require.resolve("stream-browserify"),
       "assert": require.resolve("assert/"),
       "buffer": require.resolve("buffer/"),
-      "crypto": require.resolve("crypto-browserify"),
       "vm": require.resolve("vm-browserify"),
       "zlib": require.resolve("browserify-zlib"),
-      "async_hooks": false, // async_hooks não possui polyfill, deve ser desativado
+      "util": require.resolve("util/"),
     }
   },
-  plugins: [
-    new webpack.ProvidePlugin({
-      Buffer: ['buffer', 'Buffer'],
-      process: 'process/browser'
-    }),
-  ],
   module: {
     rules: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader'
-        }
-      }
-    ]
-  }
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env'],
+          },
+        },
+      },
+    ],
+  },
+  plugins: [
+    new webpack.ProvidePlugin({
+      Buffer: ['buffer', 'Buffer'],
+      process: 'process/browser',
+    }),
+  ],
 };
