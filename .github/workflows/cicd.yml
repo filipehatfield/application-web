@@ -18,7 +18,7 @@ jobs:
 
       - name: Executar testes
         run: |
-          #cd application-web
+          cd application-web
           npm install --save-dev jest supertest
           npm test
 
