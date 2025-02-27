@@ -21,6 +21,9 @@ jobs:
 
       - name: Instalar dependências
         run: |
+          rm -rf node_modules package-lock.json
+          npm cache clean --force
+          npm install
           cd application-web
           npm install --save-dev @babel/preset-env @babel/core babel-jest
           npm install process
@@ -29,6 +32,8 @@ jobs:
           npm install buffer stream-browserify --save-dev
           npm install --save-dev babel-loader @babel/core @babel/preset-env webpack webpack-cli
           npm install util path-browserify url stream-browserify assert buffer crypto-browserify
+          npm install vm-browserify util url stream-browserify assert buffer crypto-browserify path-browserify process browserify-zlib async_hooks
+
           npm install
 
       - name: Executar testes

@@ -17,6 +17,9 @@ module.exports = {
       "assert": require.resolve("assert/"),
       "buffer": require.resolve("buffer/"),
       "crypto": require.resolve("crypto-browserify"),
+      "vm": require.resolve("vm-browserify"),
+      "zlib": require.resolve("browserify-zlib"),
+      "async_hooks": false, // async_hooks não possui polyfill, deve ser desativado
     }
   },
   plugins: [
