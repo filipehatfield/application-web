@@ -22,6 +22,11 @@ jobs:
       - name: Instalar dependências
         run: |
           cd application-web
+          npm install --save-dev @babel/preset-env @babel/core babel-jest
+          npm install path-browserify url --save-dev
+          npm install --save-dev webpack webpack-cli
+          npm install buffer stream-browserify --save-dev
+          npm install --save-dev babel-loader @babel/core @babel/preset-env webpack webpack-cli
           npm install
 
       - name: Executar testes
@@ -32,10 +37,6 @@ jobs:
       - name: Construir aplicação
         run: |
           cd application-web
-          npm install path-browserify url --save-dev
-          npm install --save-dev webpack webpack-cli
-          npm install buffer stream-browserify --save-dev
-          npm install --save-dev babel-loader @babel/core @babel/preset-env webpack webpack-cli
           npm run build
 
       - name: Armazenar artefato
