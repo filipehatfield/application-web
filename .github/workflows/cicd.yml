@@ -21,8 +21,11 @@ jobs:
 
       - name: Instalar dependências
         run: |
-          cd application-web          
+          cd application-web
+          rm -rf node_modules package-lock.json
+          npm cache clean --force          
           npm install
+          npm install url process util path-browserify buffer crypto-browserify stream-browserify assert vm-browserify browserify-zlib node-polyfill-webpack-plugin --save-dev
 
       - name: Executar testes
         run: |

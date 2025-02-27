@@ -1,25 +1,33 @@
 const path = require('path');
+const webpack = require('webpack');
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 
 module.exports = {
-  mode: 'production', // ou 'development'
-  entry: './app/public/index.js', // Apenas código front-end
+  entry: './app/public/index.js',
   output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'app/public'),
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'bundle.js'
   },
+  mode: 'production',
   resolve: {
     fallback: {
-      "path": require.resolve("path-browserify"),
-      "url": require.resolve("url/"),
-      "crypto": require.resolve("crypto-browserify"),
-      "stream": require.resolve("stream-browserify"),
-      "assert": require.resolve("assert/"),
-      "buffer": require.resolve("buffer/"),
-      "vm": require.resolve("vm-browserify"),
-      "zlib": require.resolve("browserify-zlib"),
-      "util": require.resolve("util/"),
+      url: require.resolve('url/'),
+      stream: require.resolve('stream-browserify'),
+      buffer: require.resolve('buffer/'),
+      crypto: require.resolve('crypto-browserify'),
+      assert: require.resolve('assert/'),
+      util: require.resolve('util/'),
+      path: require.resolve('path-browserify'),
+      process: require.resolve('process/browser')
     }
   },
+  plugins: [
+    new NodePolyfillPlugin(),
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+      Buffer: ['buffer', 'Buffer']
+    })
+  ],
   module: {
     rules: [
       {
@@ -28,16 +36,10 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env'],
-          },
-        },
-      },
-    ],
-  },
-  plugins: [
-    new webpack.ProvidePlugin({
-      Buffer: ['buffer', 'Buffer'],
-      process: 'process/browser',
-    }),
-  ],
+            presets: ['@babel/preset-env']
+          }
+        }
+      }
+    ]
+  }
 };
