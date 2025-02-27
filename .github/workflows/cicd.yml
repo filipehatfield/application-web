@@ -13,18 +13,18 @@ jobs:
 
       - name: Instalar dependências
         run: |
-          #cd application-web/app
+          cd application-web
           npm install
 
       - name: Executar testes
         run: |
-          #cd application-web/test
+          #cd application-web
           npm install --save-dev jest supertest
           npm test
 
       - name: Construir aplicação
         run: |
-          #cd application-web/app
+          cd application-web
           npm run build
 
       - name: Armazenar artefato
