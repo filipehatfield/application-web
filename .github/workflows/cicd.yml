@@ -52,7 +52,7 @@ jobs:
           # Rodar o Dependency-Check para analisar dependências do Node.js
           /bin/sh /opt/dependency-check/bin/dependency-check.sh \
           --project "application-web" \
-          --scan ./app \
+          --scan ./application-web/app \
           -f ALL \
           --out ./dependency-check-report
 
@@ -83,5 +83,7 @@ jobs:
           sonar-scanner \
           -Dsonar.projectKey=filipehatfield_application-web \
           -Dsonar.organization=filipehatfield \
+          -Dsonar.sources=application-web/app \
+          -Dsonar.sourceEncoding=UTF-8 \
           -Dsonar.dependencyCheck.reportPath=./dependency-check-report/dependency-check-report.json \
           -Dsonar.host.url=https://sonarcloud.io
