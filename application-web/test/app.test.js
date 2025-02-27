@@ -1,19 +1,19 @@
-//const request = require('supertest');
-//const { app } = require('../app/server');
-//
-//describe('Testes da aplicação web', () => {
-//    it('Deve responder com status 200 na rota principal', async () => {
-//        const response = await request(app).get('/');
-//        expect(response.status).toBe(200);
-//        expect(response.text).toBe('Aplicação web rodando!');
-//    });
-//});
-
-
 const request = require('supertest');
-const app = require('../app/server'); // Corrija esse caminho conforme a estrutura do projeto
+const app = require('../app/server'); // Certifique-se que o caminho está correto
 
-test('Deve responder com uma mensagem', async () => {
-    const response = await request(app).get('/');
-    expect(response.text).toBe('Aplicação web rodando!');
+describe('Testes da aplicação', () => {
+    let server;
+
+    beforeAll(() => {
+        server = app.listen(4000); // Inicia o servidor na porta 4000 para testes
+    });
+
+    afterAll((done) => {
+        server.close(done); // Fecha o servidor após os testes
+    });
+
+    test('Deve responder com uma mensagem', async () => {
+        const response = await request(server).get('/');
+        expect(response.text).toBe('Aplicação web rodando!');
+    });
 });
