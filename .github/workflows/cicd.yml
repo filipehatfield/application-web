@@ -13,17 +13,18 @@ jobs:
 
       - name: Instalar dependências
         run: |
-          cd app
+          cd application-web/app
           npm install
 
       - name: Executar testes
         run: |
-          cd app
+          cd application-web/test
+          npm start
           npm test
 
       - name: Construir aplicação
         run: |
-          cd app
+          cd application-web/app
           npm run build
 
       - name: Armazenar artefato
